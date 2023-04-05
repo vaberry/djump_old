@@ -66,6 +66,8 @@ touch index.html
 cp ~/desktop/djump/djump_script/templates/app/index.html .
 touch home.html
 cp ~/desktop/djump/djump_script/templates/app/home.html .
+touch forms.py
+
 
 cd ../../static/main
 cp ~/desktop/djump/djump_script/templates/root/favicon.ico .
