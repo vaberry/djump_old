@@ -76,5 +76,3 @@ cd ../../
 
 cd ~/desktop/djump/$projectName/$projectName
 code .
-
-gnome-terminal -- command
