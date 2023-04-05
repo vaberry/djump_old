@@ -1,3 +1,3 @@
 import subprocess
  
-subprocess.call(['sh', './dj.sh'])
+subprocess.call(['sh', './djump.sh'])
