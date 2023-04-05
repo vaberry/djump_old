@@ -39,9 +39,12 @@ cp ~/desktop/djump/djump_script/templates/root/.gitignore .
 python manage.py startapp main
 mkdir static && cd static && mkdir main && cd main
 mkdir css img js fonts
+cd css
+touch style.css
+cp ~/desktop/djump/djump_script/templates/root/style.css .
 
 ## settings
-cd ../../$projectName && rm settings.py
+cd ../../../$projectName && rm settings.py
 cp ~/desktop/djump/djump_script/templates/root/settings.py .
 sed -i -e 's/template_settings/'$projectName'/' settings.py
 rm settings.py-e
@@ -68,4 +71,7 @@ cd ../../static/main
 cp ~/desktop/djump/djump_script/templates/root/favicon.ico .
 cd ../../
 
+cd ~/desktop/djump/$projectName/$projectName
 code .
+
+gnome-terminal -- command
