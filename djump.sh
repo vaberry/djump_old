@@ -1,78 +1,78 @@
 #!/bin/bash/
-if [[ "$(python3 -V)" =~ "Python 3" ]]
-then echo "python3 is installed..."
-else echo "please install python" && exit 0
-fi
 
-echo “creating djump project...”
-read -p "Project name: " projectName
+# set djump variables
+env=$(<djump_files/templates/root/.env)
+git=$(<djump_files/templates/root/.gitignore)
+style=$(<djump_files/templates/root/style.css)
+settings=$(<djump_files/templates/root/settings.py)
+root_urls=$(<djump_files/templates/root/urls.py)
+favicon=$(<djump_files/templates/root/favicon.ico)
+
+app_urls=$(<djump_files/templates/app/urls.py)
+views=$(<djump_files/templates/app/views.py)
+index=$(<djump_files/templates/app/index.html)
+home=$(<djump_files/templates/app/home.html)
+##
+
+#set user project name varible
+projName=$1
+##
+
+if [[ ! "$(python3 -V)" =~ "Python 3" ]]; then echo "please install python" && exit 0; fi
 cd ~/desktop
-[ ! -d "djump" ] && mkdir djump
+if [ ! -d "djump" ]; then echo "making djump folder on your desktop" && mkdir djump; fi
 cd djump
-
-if [ ! -d $projectName ] 
-then echo "making project file" && mkdir $projectName
-else echo "project already exists" && exit 0
-fi
-
-cd $projectName
-if [ ! -d "env" ]
-then python3 -m venv env
-fi
-
+if [ ! -d $projName ]; then echo "making '$projName' project folder in djump" && mkdir $projName; else echo "project already exists, try a different name" && exit 0; fi
+cd $projName && python3 -m venv env
 cd env && . bin/activate && cd ..
 pip install django gunicorn psycopg2-binary dj-database-url python-dotenv
-if [ ! -d $projectName ]
-then django-admin startproject $projectName
-fi
-
-cd $projectName
-
-# update root files
+django-admin startproject $projName
+cd $projName
 pip freeze > requirements.txt
+
 touch .env
-cp ~/desktop/djump/djump_script/templates/root/.env .
+echo "$env" > .env
 
 touch .gitignore
-cp ~/desktop/djump/djump_script/templates/root/.gitignore .
+echo "$git" > .gitignore
 
-python manage.py startapp main
-mkdir static && cd static && mkdir main && cd main
-mkdir css img js fonts
-cd css
+mkdir static && cd static
+mkdir main && cd main
+touch favicon.ico
+echo "$favicon" > favicon.ico
+mkdir css img js fonts && cd css
 touch style.css
-cp ~/desktop/djump/djump_script/templates/root/style.css .
+echo "$style" > style.css
 
-## settings
-cd ../../../$projectName && rm settings.py
-cp ~/desktop/djump/djump_script/templates/root/settings.py .
-sed -i -e 's/template_settings/'$projectName'/' settings.py
+cd ../../../$projName && rm settings.py
+
+touch settings.py
+echo "$settings" > settings.py
+sed -i -e 's/template_settings/'$projName'/' settings.py
 rm settings.py-e
 
 rm urls.py
 touch urls.py
-cp ~/desktop/djump/djump_script/templates/root/urls.py .
+echo "$root_urls" > urls.py
 
-cd ../main
+cd ..
+
+python manage.py startapp main && cd main
+
 touch urls.py
-cp ~/desktop/djump/djump_script/templates/app/urls.py .
+echo "$app_urls" > urls.py
 
 rm views.py
 touch views.py
-cp ~/desktop/djump/djump_script/templates/app/views.py .
+echo "$views" > views.py
 
 mkdir templates && cd templates
 touch index.html
-cp ~/desktop/djump/djump_script/templates/app/index.html .
+echo "$index" > index.html
 touch home.html
-cp ~/desktop/djump/djump_script/templates/app/home.html .
+echo "$home" > home.html
 cd ..
 touch forms.py
 
-
-cd ../static/main
-cp ~/desktop/djump/djump_script/templates/root/favicon.ico .
-cd ../../
-
-cd ~/desktop/djump/$projectName/$projectName
+cd ..
 code .
